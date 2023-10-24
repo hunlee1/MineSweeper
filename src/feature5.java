@@ -1,61 +1,58 @@
-import static MineSweeper.feature.createGameBoard;
+import java.util.Random;
 
 public class feature5 {
     public static void main(String[] args) {
-        // 게임 보드 생성 및 지뢰 배치는 이전 코드와 동일하게 수행합니다.
-        char[][] gameBoard = createGameBoard(5, 2); // 5x5 보드에 2개의 지뢰 배치 예시
+        int size = 5; // 게임 보드 크기
+        char[][] gameBoard = createGameBoard(size);
 
-        // 주변 지뢰 개수 계산 및 출력
-        calculateNeighborMineCounts(gameBoard);
-        printGameBoard(gameBoard);
+        printGameBoardWithSurroundingMines(gameBoard);
     }
 
-    public static void calculateNeighborMineCounts(char[][] board) {
-        int width = board.length;
-        int height = board[0].length;
+    public static char[][] createGameBoard(int size) {
+        char[][] board = new char[size][size];
+        Random random = new Random();
 
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                if (board[i][j] != 'X') {
-                    int mineCount = countNeighborMines(board, i, j);
-                    if (mineCount > 0) {
-                        board[i][j] = (char) ('0' + mineCount);
-                    } else {
-                        board[i][j] = 'O';
-                    }
-                }
-            }
-        }
-    }
-
-    public static int countNeighborMines(char[][] board, int x, int y) {
-        int width = board.length;
-        int height = board[0].length;
-        int mineCount = 0;
-
-        for (int i = -1; i <= 1; i++) {
-            for (int j = -1; j <= 1; j++) {
-                int newX = x + i;
-                int newY = y + j;
-
-                if (newX >= 0 && newX < width && newY >= 0 && newY < height && board[newX][newY] == 'X') {
-                    mineCount++;
-                }
+        // 게임 보드 초기화
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                board[i][j] = 'O';
             }
         }
 
-        return mineCount;
+        // 예시로 지뢰를 (1,1)과 (3,3)에 배치
+        board[1][1] = 'X';
+        board[3][3] = 'X';
+
+        return board;
     }
 
-    public static void printGameBoard(char[][] board) {
-        int width = board.length;
-        int height = board[0].length;
-
-        for (int i = 0; i < width; i++) {
-            for (int j = 0; j < height; j++) {
-                System.out.print(board[i][j] + " ");
+    public static void printGameBoardWithSurroundingMines(char[][] board) {
+        int size = board.length;
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (board[i][j] == 'X') {
+                    System.out.print("X ");
+                } else {
+                    int mineCount = countSurroundingMines(board, i, j);
+                    System.out.print(mineCount + " ");
+                }
             }
             System.out.println();
         }
+    }
+
+    public static int countSurroundingMines(char[][] board, int x, int y) {
+        int count = 0;
+        int size = board.length;
+
+        for (int i = x - 1; i <= x + 1; i++) {
+            for (int j = y - 1; j <= y + 1; j++) {
+                if (i >= 0 && i < size && j >= 0 && j < size && board[i][j] == 'X') {
+                    count++;
+                }
+            }
+        }
+
+        return count;
     }
 }
