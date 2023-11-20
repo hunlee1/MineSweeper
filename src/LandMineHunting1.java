@@ -2,49 +2,51 @@ import java.util.Scanner;
 import java.util.Random;
 import java.util.Arrays;
 
-
-class InputRangeAndMsg {
+// 범위 데이터를 담는 클래스
+class Range {
+    String prompt;
     int min;
     int max;
 
-    InputRangeAndMsg(int min, int max) {
+    Range(String prompt, int min, int max) {
+        this.prompt = prompt;
         this.min = min;
         this.max = max;
     }
 }
 
-
-public class LandMineHunting1 {
-
+public class LandMineHunting {
+    // 상수화된 변수 추가
     private static final int MIN_BOARD_SIZE = 5;
     private static final int MAX_BOARD_SIZE = 15;
     private static final char EMPTY_CELL = 'O';
     private static final char MINE_SYMBOL = 'X';
-    private static final String EMPTY_CELL_SYMBOL = " ";
-    // 상수로 빈 셀을 나타내는 문자를 정의 (↑코드)
+    private static final String EMPTY_SYMBOL = " ";
 
+    // Scanner를 멤버 변수로 변경
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
-        String inputBoardSizeMsg = "게임 보드 크기를 입력하세요 (" + MIN_BOARD_SIZE + "-" + MAX_BOARD_SIZE + "): ";
-        InputRangeAndMsg boardSizeRange = new InputRangeAndMsg(MIN_BOARD_SIZE, MAX_BOARD_SIZE);
-        int boardSize = getInputInRange(inputBoardSizeMsg, boardSizeRange);
+        // 게임 보드 크기 입력 및 범위 확인
+        Range boardSizeRange = new Range("게임 보드 크기를 입력하세요 (" + MIN_BOARD_SIZE + "-" + MAX_BOARD_SIZE + "): ", MIN_BOARD_SIZE, MAX_BOARD_SIZE);
+        int boardSize = getInputInRange(boardSizeRange);
 
-        int minMines = (int) (boardSize * boardSize * 0.1);
-        int maxMines = (int) (boardSize * boardSize * 0.2);
-        String inputMinesMsg = "지뢰 개수를 입력하세요 (" + minMines + " ~ " + maxMines + "): ";
-        InputRangeAndMsg minesRange = new InputRangeAndMsg(minMines, maxMines);
-        int totalMines = getInputInRange(inputMinesMsg, minesRange);
+        // 지뢰 개수 입력 및 범위 확인
+        int totalMines = getInputInRange(new Range("지뢰 개수를 입력하세요 (" + (int) (boardSize * boardSize * 0.1) + " ~ " + (int) (boardSize * boardSize * 0.2) + "): ",
+                (int) (boardSize * boardSize * 0.1), (int) (boardSize * boardSize * 0.2)));
 
+        // 게임 보드 생성
         char[][] gameBoard = createGameBoard(boardSize, totalMines);
 
+        // 게임 보드 출력
         printGameBoard(gameBoard);
     }
 
-    private static int getInputInRange(String prompt, InputRangeAndMsg range) {
+    // Range 클래스를 인자로 받도록 수정
+    private static int getInputInRange(Range range) {
         int inputValue = 0;
         do {
-            System.out.print(prompt);
+            System.out.print(range.prompt);
             inputValue = scanner.nextInt();
             if (inputValue < range.min || inputValue > range.max) {
                 System.out.println("입력값이 범위를 벗어났습니다. 다시 입력하세요.");
@@ -54,75 +56,67 @@ public class LandMineHunting1 {
     }
 
     private static char[][] createGameBoard(int size, int totalMines) {
-        char[][] board = createAndInitializeGameBoard(size);
+        char[][] board = new char[size][size];
         Random random = new Random();
 
-        placeMines(board, totalMines, random);
-
-        return board;
-    }
-    private static char[][] createAndInitializeGameBoard(int size) {
-        char[][] board = new char[size][size];
+        // 게임 보드 초기화
         for (char[] row : board) {
             Arrays.fill(row, EMPTY_CELL);
         }
-        return board;
-    }
 
-    private static void placeMines(char[][] board, int totalMines, Random random) {
+        // 지뢰 랜덤 배치
         while (totalMines > 0) {
-            int x = random.nextInt(board.length);
-            int y = random.nextInt(board[0].length);
+            int x = random.nextInt(size);
+            int y = random.nextInt(size);
 
             if (board[x][y] != MINE_SYMBOL) {
                 board[x][y] = MINE_SYMBOL;
                 totalMines--;
             }
         }
+
+        return board;
     }
 
     private static void printGameBoard(char[][] board) {
         int size = board.length;
-
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (board[i][j] == MINE_SYMBOL) {
-                    System.out.print(MINE_SYMBOL + EMPTY_CELL_SYMBOL);
+                    System.out.print(MINE_SYMBOL + " ");
                 } else {
                     int mineCount = countSurroundingMines(board, i, j);
-                    System.out.print(mineCount + EMPTY_CELL_SYMBOL);
+                    System.out.print(mineCount + EMPTY_SYMBOL);
                 }
             }
             System.out.println();
         }
     }
+
     private static int countSurroundingMines(char[][] board, int x, int y) {
         int count = 0;
         int size = board.length;
 
-        for (int i = x - 1; i <= x + 1; i++) {
-            for (int j = y - 1; j <= y + 1; j++) {
-                if (isValidCell(i, j, size) && board[i][j] == MINE_SYMBOL) {
-                    count++;
-                }
-            }
+        if (!isValidCell(x - 1, y, size) || board[x - 1][y] == MINE_SYMBOL) {
+            count++;
+        }
+
+        if (!isValidCell(x + 1, y, size) || board[x + 1][y] == MINE_SYMBOL) {
+            count++;
+        }
+
+        if (!isValidCell(x, y - 1, size) || board[x][y - 1] == MINE_SYMBOL) {
+            count++;
+        }
+
+        if (!isValidCell(x, y + 1, size) || board[x][y + 1] == MINE_SYMBOL) {
+            count++;
         }
 
         return count;
     }
 
-
     private static boolean isValidCell(int x, int y, int size) {
-        if (x < 0)
-            return false;
-        if (x >= size)
-            return false;
-        if (y < 0)
-            return false;
-        if (y >= size)
-            return false;
-
-        return true;
+        return x >= 0 && x < size && y >= 0 && y < size;
     }
 }
-
