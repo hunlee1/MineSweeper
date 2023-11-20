@@ -14,7 +14,7 @@ class InputRangeAndMsg {
 }
 
 
-public class LandMineHunting {
+public class LandMineHunting1 {
 
     private static final int MIN_BOARD_SIZE = 5;
     private static final int MAX_BOARD_SIZE = 15;
