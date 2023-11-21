@@ -12,7 +12,6 @@ class InputRange {
     }
 }
 
-
 public class LandMineHunting {
 
     private static final int MIN_BOARD_SIZE = 5;
