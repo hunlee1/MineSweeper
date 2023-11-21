@@ -3,11 +3,11 @@ import java.util.Random;
 import java.util.Arrays;
 
 
-class InputRangeAndMsg {
+class InputRange {
     int min;
     int max;
 
-    InputRangeAndMsg(int min, int max) {
+    InputRange(int min, int max) {
         this.min = min;
         this.max = max;
     }
@@ -27,13 +27,13 @@ public class LandMineHunting {
 
     public static void main(String[] args) {
         String inputBoardSizeMsg = "게임 보드 크기를 입력하세요 (" + MIN_BOARD_SIZE + "-" + MAX_BOARD_SIZE + "): ";
-        InputRangeAndMsg boardSizeRange = new InputRangeAndMsg(MIN_BOARD_SIZE, MAX_BOARD_SIZE);
+        InputRange boardSizeRange = new InputRange(MIN_BOARD_SIZE, MAX_BOARD_SIZE);
         int boardSize = getInputInRange(inputBoardSizeMsg, boardSizeRange);
 
         int minMines = (int) (boardSize * boardSize * 0.1);
         int maxMines = (int) (boardSize * boardSize * 0.2);
         String inputMinesMsg = "지뢰 개수를 입력하세요 (" + minMines + " ~ " + maxMines + "): ";
-        InputRangeAndMsg minesRange = new InputRangeAndMsg(minMines, maxMines);
+        InputRange minesRange = new InputRange(minMines, maxMines);
         int totalMines = getInputInRange(inputMinesMsg, minesRange);
 
         char[][] gameBoard = createGameBoard(boardSize, totalMines);
@@ -41,7 +41,7 @@ public class LandMineHunting {
         printGameBoard(gameBoard);
     }
 
-    private static int getInputInRange(String prompt, InputRangeAndMsg range) {
+    private static int getInputInRange(String prompt, InputRange range) {
         int inputValue = 0;
         do {
             System.out.print(prompt);
@@ -54,14 +54,14 @@ public class LandMineHunting {
     }
 
     private static char[][] createGameBoard(int size, int totalMines) {
-        char[][] board = createAndInitializeGameBoard(size);
+        char[][] board = InitializeGameBoard(size);
         Random random = new Random();
 
         placeMines(board, totalMines, random);
 
         return board;
     }
-    private static char[][] createAndInitializeGameBoard(int size) {
+    private static char[][] InitializeGameBoard(int size) {
         char[][] board = new char[size][size];
         for (char[] row : board) {
             Arrays.fill(row, EMPTY_CELL);
