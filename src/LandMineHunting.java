@@ -21,7 +21,7 @@ public class LandMineHunting {
     private static final char EMPTY_CELL = 'O';
     private static final char MINE_SYMBOL = 'X';
     private static final String EMPTY_CELL_SYMBOL = " ";
-    // 상수로 빈 셀을 나타내는 문자를 정의 (↑코드)
+    
 
     private static Scanner scanner = new Scanner(System.in);
 
