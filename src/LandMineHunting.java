@@ -109,7 +109,6 @@ public class LandMineHunting {
         return count;
     }
 
-
     private static boolean isValidCell(int x, int y, int size) {
         if (x < 0)
             return false;
