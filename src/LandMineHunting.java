@@ -2,7 +2,6 @@ import java.util.Scanner;
 import java.util.Random;
 import java.util.Arrays;
 
-
 class InputRange {
     int min;
     int max;
