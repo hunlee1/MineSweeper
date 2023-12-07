@@ -11,11 +11,11 @@ public class Solution {
         int n = land.length;
         int m = land[0].length;
 
-        // dp 배열 초기화
+
         int[][] dp = new int[n][m];
         System.arraycopy(land[0], 0, dp[0], 0, m);
 
-        // 각 위치에서의 최대 석유량 계산
+
         for (int i = 1; i < n; i++) {
             int[] maxValues = getMaxValues(dp[i - 1]);
             for (int j = 0; j < m; j++) {
@@ -23,10 +23,10 @@ public class Solution {
             }
         }
 
-        // 마지막 행에서 최대 석유량 찾기
+
         int result = getMaxValue(dp[n - 1]);
 
-        // 결과 출력
+
         System.out.println("가장 많은 석유량: " + result);
     }
 
